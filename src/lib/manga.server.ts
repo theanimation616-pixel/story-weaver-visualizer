@@ -308,7 +308,7 @@ const PROMPT_SYSTEM =
   "- NO TEXT: never describe text, letters, words, numbers, signs, signboards, posters, banners, newspapers, book pages, " +
   "screens with writing, labels or logos. If the script mentions something written, show the OBJECT and the character's " +
   "reaction instead, never the writing itself.\n" +
-  "- 55 to 85 words each. English only. No numbering inside the string.\n" +
+  "- 90 to 130 words each — dense with visual detail, no filler. English only. No numbering inside the string.\n" +
   "- Do not deliberate or explain. Output the JSON array immediately.\n" +
   'Return ONLY a JSON array of strings, one per numbered line, in order.';
 
