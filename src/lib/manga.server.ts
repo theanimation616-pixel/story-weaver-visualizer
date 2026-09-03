@@ -217,15 +217,16 @@ export async function buildCharacterBible(script: string): Promise<string> {
 
 
 const PROMPT_SYSTEM =
-  "You write image prompts for a DARK, mysterious, cinematic manga storyboard. Input: a character bible, optional story " +
-  "context, and numbered script lines (Hindi/Hinglish). For EACH numbered line write ONE English image prompt describing a " +
-  "SINGLE cinematic moment from that line.\n" +
+  "You write image prompts for a richly detailed full-colour webtoon (manhwa) storyboard. Input: a character bible, " +
+  "optional story context, and numbered script lines (Hindi/Hinglish). For EACH numbered line write ONE English image " +
+  "prompt describing a SINGLE cinematic moment from that line.\n" +
   "EVERY prompt must contain, in this order: (1) who is in frame with their bible traits woven inline — but ONLY if the " +
   "script line actually mentions a person; if it mentions none, this part is skipped entirely and the shot has no people " +
-  "at all, (2) the exact action and facial expression, (3) the specific setting with 2-3 concrete environmental details " +
-  "taken from the script line, (4) the camera angle and shot size (extreme close-up / close-up / medium / wide / low " +
-  "angle / over-the-shoulder / Dutch tilt), (5) the lighting description (e.g. 'single bare bulb throwing hard shadows', " +
-  "'blue moonlight through a barred window', 'dull ember glow in thick darkness').\n" +
+  "at all, (2) the exact action, body pose and facial expression, (3) the specific setting with 4-6 concrete environmental " +
+  "details taken from the script line and the bible's place description, (4) the camera angle and shot size (extreme " +
+  "close-up / close-up / medium / wide / low angle / high angle / over-the-shoulder), (5) the natural lighting and colour " +
+  "of the scene as the script implies it (e.g. 'bright morning sunlight, blue sky, green fields', 'warm ceiling lamp " +
+  "light, cream walls', 'clear moonlit night with visible detail').\n" +
 
   "RULES:\n" +
   "- ONE LINE = ONE IMAGE (absolute): the output array has EXACTLY one prompt per numbered line, in the same order, even " +
