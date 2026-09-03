@@ -29,7 +29,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse
 import urllib.request
 
-W, H, FPS, XF, GROUP = 1920, 1080, 30, 0.7, 40
+W, H, FPS, XF, GROUP = 1280, 720, 24, 0.7, 40
 BASE = os.environ.get("SW_BASE") or ("/content" if os.path.isdir("/content") else os.getcwd())
 WORK = os.path.join(BASE, "sw_work")
 OUT = os.path.join(BASE, "sw_out")
@@ -112,7 +112,7 @@ def move_for(i):
 
 
 def clip_filter(i, dur, prompt):
-    """zoompan Ken Burns + colour grade, always output exact 16:9 1080p."""
+    """zoompan Ken Burns + colour grade, always output exact 16:9 720p."""
     z0, z1, x0, x1, y0, y1 = move_for(i)
     frames = max(1, round(dur * FPS))
     contrast, bright, sat, cb = grade_for(prompt, i)
