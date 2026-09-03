@@ -7,24 +7,28 @@ const CHAT_MODEL = "qwen3.8-27b";
 const PIXAZO_URL = "https://gateway.pixazo.ai/flux-1-schnell/v1/getData";
 
 /**
- * Global art direction: look and craft only. The tone is stated ONCE, in
- * TONE_LOCK below — stacking it here as well is what used to compound into
- * near-black panels.
+ * Global art direction — the look of a professionally published full-colour
+ * webtoon / manhwa page: crisp clean ink linework, flat cel shading with soft
+ * gradient blush and highlights, expressive faces with large detailed eyes,
+ * meticulously drawn painted backgrounds (architecture, furniture, props all
+ * fully rendered), natural readable colour and light. No mood filter is
+ * applied: the lighting is whatever the script line says it is.
  */
 export const STYLE =
-  "cinematic anime manga illustration, moody atmospheric key visual, " +
-  "restrained palette of charcoal, midnight blue, cold slate grey and warm ember accents, " +
-  "cel shading with soft gradients, bold clean ink lines, richly detailed painted backgrounds, " +
-  "clear focal subject, crisp facial features, high quality anime key visual";
+  "professional full-colour Korean webtoon manhwa page illustration, masterpiece quality, " +
+  "crisp clean confident ink outlines, flat cel shading with soft gradient blush and glossy hair highlights, " +
+  "expressive detailed faces with large finely drawn eyes, " +
+  "extremely detailed fully rendered background with every piece of architecture, furniture, prop and texture drawn out, " +
+  "rich natural colour palette, clear bright readable lighting, sharp focus, intricate details, 8k, best quality";
 
-/** The single authoritative tone statement for every panel. */
+/**
+ * The single authoritative light statement for every panel: natural, faithful
+ * to the script, and always readable. Deliberately neutral — no darkness, no
+ * mystery, no mood grade.
+ */
 export const TONE_LOCK =
-  "TONE: moody low-key cinematic lighting, dim and mysterious, with the subject, faces and key details clearly lit " +
-  "and easy to read; shadows keep detail and midtones stay visible";
-
-
-/** @deprecated kept as an alias so older call sites keep compiling. */
-export const DARK_TONE_LOCK = TONE_LOCK;
+  "LIGHTING: natural, clear and well-exposed, exactly as the scene describes (bright daylight stays bright, " +
+  "a night scene is a well-lit night scene); faces, eyes and every environment detail are fully visible";
 
 
 
