@@ -313,17 +313,19 @@ const PROMPT_SYSTEM =
   'Return ONLY a JSON array of strings, one per numbered line, in order.';
 
 const CHUNK_SYSTEM =
-  "You are a manga art director. You are given a character bible, the story so far, and one CHUNK of consecutive " +
+  "You are a webtoon (manhwa) art director. You are given a character bible, the story so far, and one CHUNK of consecutive " +
   "script lines (Hindi/Hinglish) with timestamps. Analyse ONLY this chunk and return a compact English CHUNK BRIEF " +
   "that a storyboard artist will use to draw every line of this chunk.\n" +
   "Return plain text with exactly these labelled lines:\n" +
-  "SETTING: the place(s) this chunk happens in, with 3-5 concrete visual details (architecture, objects, weather, time of day).\n" +
+  "SETTING: the place(s) this chunk happens in, with 5-8 concrete visual details (architecture, materials, colours, " +
+  "furniture, objects, plants, weather, time of day). If the bible has a matching 'Place - ' line, reuse its details verbatim.\n" +
   "CAST: only the people who actually appear in this chunk, each with their fixed traits (from the bible if listed there, " +
   "otherwise invent a short fixed look: age, gender, hair, clothing colour). ALWAYS state each person's gender " +
   "explicitly as 'male' or 'female' with a matching noun, identical every time that person appears in the story. " +
   "Write 'none' if the chunk has no people.\n" +
   "OBJECTS: the specific things/phenomena the chunk mentions (gates, storm, letter, vehicle...) and how they look.\n" +
-  "MOOD: lighting and atmosphere for this chunk (one line).\n" +
+  "LIGHT: the natural lighting and colour of this chunk exactly as the script implies (time of day, light source, sky, " +
+  "dominant colours) — factual only, never add gloom, darkness or mystery the script does not state.\n" +
   "BEATS: one short line per numbered script line, in this exact format — 'n) LOCATION: <the place this shot happens " +
   "in, 3-6 words> | WHO: <exact character names visible in this shot, comma separated, or 'no people'> | <what visibly " +
   "happens>'.\n" +
