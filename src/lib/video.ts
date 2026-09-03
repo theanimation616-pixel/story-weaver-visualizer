@@ -21,9 +21,9 @@ export type BuildResult =
   | { kind: "blob"; blob: Blob }
   | { kind: "file"; fileName: string };
 
-const W = 1920;
-const H = 1080;
-const FPS = 30;
+const W = 1280;
+const H = 720;
+const FPS = 24;
 /** Cross-fade length between two shots (seconds). */
 const XF = 0.7;
 /** Keyframe interval (seconds) — keeps the mp4 seekable without bloating it. */
@@ -346,7 +346,7 @@ export async function buildVideo(
   if (!ctx) throw new Error("Could not create a rendering canvas.");
   ctx.imageSmoothingQuality = "high";
 
-  // Ken Burns math is written against a 1920x1080 stage; scale the draw calls.
+  // Ken Burns math is written against a 16:9 stage; scale the draw calls.
   const sx = width / W;
   const sy = height / H;
 
