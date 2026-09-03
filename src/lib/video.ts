@@ -21,9 +21,9 @@ export type BuildResult =
   | { kind: "blob"; blob: Blob }
   | { kind: "file"; fileName: string };
 
-const W = 1920;
-const H = 1080;
-const FPS = 30;
+const W = 1280;
+const H = 720;
+const FPS = 24;
 /** Cross-fade length between two shots (seconds). */
 const XF = 0.7;
 /** Keyframe interval (seconds) — keeps the mp4 seekable without bloating it. */
