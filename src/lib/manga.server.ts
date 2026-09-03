@@ -239,7 +239,7 @@ const PROMPT_SYSTEM =
   "props, events, people, animals or settings. If a line is inner thought or narration, draw the concrete thing it " +
   "talks about (the person, place or object) in the beat's LOCATION, not a symbolic or unrelated image.\n" +
   "- CHUNK + TIMESTAMP (critical): each prompt is written for ONE numbered timestamp, but grounded in the CHUNK BRIEF. " +
-  "Take the place, lighting, objects and cast from the brief's SETTING/OBJECTS/MOOD/CAST, then apply the per-line BEAT " +
+  "Take the place, lighting, objects and cast from the brief's SETTING/OBJECTS/LIGHT/CAST, then apply the per-line BEAT " +
   "and the exact words of that timestamp's line. A prompt must never contradict the brief, and must never copy another " +
   "timestamp's action.\n" +
 
@@ -411,7 +411,7 @@ export async function writePrompts(
             `CHARACTER BIBLE:\n${bible}\n\n` +
             (context ? `STORY SO FAR (context only — do NOT storyboard these):\n${context}\n\n` : "") +
             (brief
-              ? `CHUNK BRIEF (analysis of exactly these lines — obey its SETTING, CAST, OBJECTS, MOOD and per-line BEATS; ` +
+              ? `CHUNK BRIEF (analysis of exactly these lines — obey its SETTING, CAST, OBJECTS, LIGHT and per-line BEATS; ` +
                 `never add a person the BEATS call 'no people'):\n${brief}\n\n`
               : "") +
             `SCRIPT LINES:\n${lines}\n\nReturn a JSON array with exactly ${segs.length} prompt strings.`,
