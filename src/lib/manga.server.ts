@@ -819,14 +819,15 @@ export function composeImagePrompt(prompt: string, bible?: string): string {
   const peopled = hasPeople(fixed, bible);
   // Character lock only matters when someone is actually in frame.
   const lock = peopled ? characterLock(fixed, bible) : "";
-  // The scene description leads: Flux weights the earliest tokens most, and it
-  // has no negative prompt, so guards are kept short and placed at the end.
+  // Flux weights the earliest tokens most: a short style lead comes first so
+  // the webtoon look can never be truncated away, then the detailed scene,
+  // then the identity lock, then the (short, positively phrased) guards.
   return (
-    `${fixed}. ${lock ? lock + " " : ""}${STYLE}, ${NO_TEXT_GUARD}. ` +
-    `${peopled ? CAST_GUARD : NO_PEOPLE_GUARD}. ${TONE_LOCK}. ${SINGLE_PANEL_GUARD}. ` +
+    `Full-colour webtoon manhwa page illustration, highly detailed: ${fixed}. ` +
+    `${lock ? lock + " " : ""}${TONE_LOCK}. ${STYLE}, ${NO_TEXT_GUARD}. ` +
+    `${peopled ? CAST_GUARD : NO_PEOPLE_GUARD}. ${SINGLE_PANEL_GUARD}. ` +
     `16:9 widescreen cinematic framing.`
   );
-
 }
 
 /**
