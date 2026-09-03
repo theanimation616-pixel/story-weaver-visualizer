@@ -880,7 +880,7 @@ async function isRealImage(url: string): Promise<boolean> {
 }
 
 
-/** Calls Flux.1 Schnell (free tier) with automatic retries. Always 16:9. */
+/** Calls Flux.1 Schnell (free tier) at max quality with automatic retries. Always 16:9. */
 export async function generateImage(
   prompt: string,
   seed: number,
@@ -888,7 +888,7 @@ export async function generateImage(
   bible?: string,
 ): Promise<string> {
   const keys = pixazoKeys();
-  const body = composeImagePrompt(prompt, bible).slice(0, 1900);
+  const body = composeImagePrompt(prompt, bible).slice(0, 2000);
 
   let lastErr = "";
   for (let attempt = 0; attempt < 6; attempt++) {
@@ -903,11 +903,14 @@ export async function generateImage(
         },
         body: JSON.stringify({
           prompt: body,
-          num_steps: 4,
+          // Quality over speed: the maximum step count Schnell accepts, at the
+          // largest 16:9 size the gateway honours (1280x720 is silently
+          // rejected; 1344x768 is rendered at that exact size).
+          num_steps: 8,
           // a fresh seed each attempt, so a blank frame is never re-rolled identically
           seed: seed + attempt * 977,
-          width: 1024,
-          height: 576,
+          width: 1344,
+          height: 768,
         }),
       });
       if (res.ok) {
