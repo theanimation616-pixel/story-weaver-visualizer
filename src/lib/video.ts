@@ -346,7 +346,7 @@ export async function buildVideo(
   if (!ctx) throw new Error("Could not create a rendering canvas.");
   ctx.imageSmoothingQuality = "high";
 
-  // Ken Burns math is written against a 1920x1080 stage; scale the draw calls.
+  // Ken Burns math is written against a 16:9 stage; scale the draw calls.
   const sx = width / W;
   const sy = height / H;
 
