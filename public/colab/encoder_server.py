@@ -97,40 +97,13 @@ MOVES = [
     (1.08, 1.22, 0.15, 0.85, 0.85, 0.15),
 ]
 
-# Moody low-key grade set — dim and atmospheric, but subjects, faces and key
-# details stay clearly readable. Brightness is lifted slightly (the source
-# panels are already dark), contrast is moderate, with a cold/dim cast.
-GRADES = {
-    "night":    ("1.14", "0.03", "0.90", "0.05:0.00:-0.10"),
-    "ember":    ("1.12", "0.05", "0.96", "0.08:0.00:-0.08"),
-    "interior": ("1.10", "0.05", "0.92", "0.05:-0.01:-0.06"),
-    "cold":     ("1.12", "0.04", "0.88", "-0.06:0.00:0.07"),
-    "dread":    ("1.18", "0.02", "0.84", "0.07:-0.02:-0.03"),
-    "storm":    ("1.12", "0.03", "0.86", "-0.05:0.00:0.06"),
-    "gloom":    ("1.08", "0.05", "0.88", "0.00:0.00:0.02"),
-    "memory":   ("1.06", "0.05", "0.80", "0.03:-0.02:0.05"),
-}
-
-CYCLE = ["gloom", "night", "cold", "interior", "dread"]
-
-KEYS = [
-    ("night", ["night", "midnight", "moon", "dark room", "starlit", "streetlight", "blackout"]),
-    ("ember", ["fire", "flame", "lantern", "ember", "candle", "torch", "dusk", "sunset", "furnace"]),
-    ("storm", ["rain", "storm", "wet", "monsoon", "fog", "mist", "thunder"]),
-    ("dread", ["angry", "fight", "blood", "scream", "fear", "threat", "battle", "knife", "corpse"]),
-    ("memory", ["memory", "dream", "flashback", "vision", "hallucination"]),
-    ("interior", ["indoor", "room", "kitchen", "lamp", "bulb", "hut", "shed"]),
-    ("cold", ["cold", "rooftop", "hospital", "office", "school", "train", "morgue", "alley"]),
-]
+# No mood grade: panels are clean, well-lit full-colour webtoon pages and the
+# video shows them as drawn. Only a very light contrast touch, no colour cast.
+CLEAN_GRADE = ("1.03", "0.00", "1.04", "0.00:0.00:0.00")
 
 
 def grade_for(prompt, i):
-    t = (prompt or "").lower()
-    for name, words in KEYS:
-        if any(w in t for w in words):
-            return GRADES[name]
-    return GRADES[CYCLE[i % len(CYCLE)]]
-
+    return CLEAN_GRADE
 
 
 def move_for(i):

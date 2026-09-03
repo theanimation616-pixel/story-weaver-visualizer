@@ -7,24 +7,28 @@ const CHAT_MODEL = "qwen3.8-27b";
 const PIXAZO_URL = "https://gateway.pixazo.ai/flux-1-schnell/v1/getData";
 
 /**
- * Global art direction: look and craft only. The tone is stated ONCE, in
- * TONE_LOCK below — stacking it here as well is what used to compound into
- * near-black panels.
+ * Global art direction — the look of a professionally published full-colour
+ * webtoon / manhwa page: crisp clean ink linework, flat cel shading with soft
+ * gradient blush and highlights, expressive faces with large detailed eyes,
+ * meticulously drawn painted backgrounds (architecture, furniture, props all
+ * fully rendered), natural readable colour and light. No mood filter is
+ * applied: the lighting is whatever the script line says it is.
  */
 export const STYLE =
-  "cinematic anime manga illustration, moody atmospheric key visual, " +
-  "restrained palette of charcoal, midnight blue, cold slate grey and warm ember accents, " +
-  "cel shading with soft gradients, bold clean ink lines, richly detailed painted backgrounds, " +
-  "clear focal subject, crisp facial features, high quality anime key visual";
+  "professional full-colour Korean webtoon manhwa page illustration, masterpiece quality, " +
+  "crisp clean confident ink outlines, flat cel shading with soft gradient blush and glossy hair highlights, " +
+  "expressive detailed faces with large finely drawn eyes, " +
+  "extremely detailed fully rendered background with every piece of architecture, furniture, prop and texture drawn out, " +
+  "rich natural colour palette, clear bright readable lighting, sharp focus, intricate details, 8k, best quality";
 
-/** The single authoritative tone statement for every panel. */
+/**
+ * The single authoritative light statement for every panel: natural, faithful
+ * to the script, and always readable. Deliberately neutral — no darkness, no
+ * mystery, no mood grade.
+ */
 export const TONE_LOCK =
-  "TONE: moody low-key cinematic lighting, dim and mysterious, with the subject, faces and key details clearly lit " +
-  "and easy to read; shadows keep detail and midtones stay visible";
-
-
-/** @deprecated kept as an alias so older call sites keep compiling. */
-export const DARK_TONE_LOCK = TONE_LOCK;
+  "LIGHTING: natural, clear and well-exposed, exactly as the scene describes (bright daylight stays bright, " +
+  "a night scene is a well-lit night scene); faces, eyes and every environment detail are fully visible";
 
 
 
@@ -162,12 +166,16 @@ export function parseJsonArray(raw: string): unknown[] {
  */
 export async function buildCharacterBible(script: string): Promise<string> {
   const system =
-    "You are a manga art director for a DARK, mysterious, noir-toned anime film. Read the script (it may be " +
+    "You are the art director of a full-colour webtoon (manhwa) adaptation. Read the script (it may be " +
     "Hinglish/Hindi) and list the recurring characters. For each, give ONE compact English line of FIXED, highly " +
     "specific visual traits usable verbatim inside an image prompt: age, gender, exact hair colour + length + style, " +
     "eye colour, skin tone, face shape, one distinguishing feature (scar, mole, glasses, bandage), build/height, and " +
     "signature clothing WITH exact colours. Be concrete — these traits must let an artist redraw the same person " +
-    "hundreds of times identically. 14-25 words per character. Max 6 characters. " +
+    "hundreds of times identically. 16-28 words per character. Max 6 characters. " +
+    "After the characters, add up to 4 recurring LOCATIONS the same way, one line each, prefixed 'Place - ', with " +
+    "fixed visual details (materials, colours, key furniture/landmarks, time of day if fixed) so the same place is " +
+    "drawn identically every time it appears, e.g. 'Place - Henan's home: small brick village house, blue wooden " +
+    "door, clay-tiled roof, neem tree in the yard, string cot outside'. " +
     "You are given only the OPENING of the script; that is enough — do not ask for more. " +
     "CRITICAL: determine each character's gender from the script (names, pronouns, relationships like brother/sister) " +
     "and make the gender the FIRST and most emphasized trait — write 'male' or 'female' explicitly plus a matching " +
@@ -209,15 +217,16 @@ export async function buildCharacterBible(script: string): Promise<string> {
 
 
 const PROMPT_SYSTEM =
-  "You write image prompts for a DARK, mysterious, cinematic manga storyboard. Input: a character bible, optional story " +
-  "context, and numbered script lines (Hindi/Hinglish). For EACH numbered line write ONE English image prompt describing a " +
-  "SINGLE cinematic moment from that line.\n" +
+  "You write image prompts for a richly detailed full-colour webtoon (manhwa) storyboard. Input: a character bible, " +
+  "optional story context, and numbered script lines (Hindi/Hinglish). For EACH numbered line write ONE English image " +
+  "prompt describing a SINGLE cinematic moment from that line.\n" +
   "EVERY prompt must contain, in this order: (1) who is in frame with their bible traits woven inline — but ONLY if the " +
   "script line actually mentions a person; if it mentions none, this part is skipped entirely and the shot has no people " +
-  "at all, (2) the exact action and facial expression, (3) the specific setting with 2-3 concrete environmental details " +
-  "taken from the script line, (4) the camera angle and shot size (extreme close-up / close-up / medium / wide / low " +
-  "angle / over-the-shoulder / Dutch tilt), (5) the lighting description (e.g. 'single bare bulb throwing hard shadows', " +
-  "'blue moonlight through a barred window', 'dull ember glow in thick darkness').\n" +
+  "at all, (2) the exact action, body pose and facial expression, (3) the specific setting with 4-6 concrete environmental " +
+  "details taken from the script line and the bible's place description, (4) the camera angle and shot size (extreme " +
+  "close-up / close-up / medium / wide / low angle / high angle / over-the-shoulder), (5) the natural lighting and colour " +
+  "of the scene as the script implies it (e.g. 'bright morning sunlight, blue sky, green fields', 'warm ceiling lamp " +
+  "light, cream walls', 'clear moonlit night with visible detail').\n" +
 
   "RULES:\n" +
   "- ONE LINE = ONE IMAGE (absolute): the output array has EXACTLY one prompt per numbered line, in the same order, even " +
@@ -230,7 +239,7 @@ const PROMPT_SYSTEM =
   "props, events, people, animals or settings. If a line is inner thought or narration, draw the concrete thing it " +
   "talks about (the person, place or object) in the beat's LOCATION, not a symbolic or unrelated image.\n" +
   "- CHUNK + TIMESTAMP (critical): each prompt is written for ONE numbered timestamp, but grounded in the CHUNK BRIEF. " +
-  "Take the place, lighting, objects and cast from the brief's SETTING/OBJECTS/MOOD/CAST, then apply the per-line BEAT " +
+  "Take the place, lighting, objects and cast from the brief's SETTING/OBJECTS/LIGHT/CAST, then apply the per-line BEAT " +
   "and the exact words of that timestamp's line. A prompt must never contradict the brief, and must never copy another " +
   "timestamp's action.\n" +
 
@@ -244,9 +253,18 @@ const PROMPT_SYSTEM =
   "- FAITHFUL DETAIL (critical): the prompt must capture the specific things that line actually says — the object, the " +
   "place, the gesture, the emotion, the weather, the time of day. Never write a generic 'a boy stands thinking' prompt. " +
   "Do not skip story details; if the line has several details, include the most visual ones.\n" +
-  "- TONE: moody low-key and mysterious — night, dusk, storm, dim interiors, motivated single light sources — but the " +
-  "subject must be clearly lit and readable: name a key light that lands on the character's face. Avoid flat bright " +
-  "sunny daylight and white backgrounds; a daytime line can be overcast or softly lit rather than pitch dark.\n" +
+  "- LIGHTING & COLOUR: take the lighting ONLY from the script — daytime is bright natural daylight, an indoor scene " +
+  "is a well-lit room, a night scene is a clearly lit night with visible detail. Never add darkness, gloom, shadowy " +
+  "mystery, fog, noir or dim moody atmosphere that the line does not state. Name the light source and the dominant " +
+  "colours of the scene (e.g. 'warm afternoon sun through a window, cream walls, wooden floor').\n" +
+  "- RICH DETAIL (critical): every prompt must be dense with concrete visual detail — for the environment name at least " +
+  "4-6 specific drawable things (furniture, architecture, textures, props, plants, weather, ground surface) that fit the " +
+  "script's location; for each person describe posture, hand position, exact expression (eyes, eyebrows, mouth) and " +
+  "clothing state. Foreground, midground and background must each have something drawn in them. A reader must be able " +
+  "to tell exactly where the scene is and what is happening from the image alone.\n" +
+  "- CONTINUITY (critical): consecutive prompts are consecutive moments of ONE continuous story. Keep the same location " +
+  "details, the same time of day, the same weather, the same clothing and the same props from the previous line unless " +
+  "the script changes them. Reuse the exact wording of the bible's 'Place - ' lines whenever the scene is in that place.\n" +
 
   "- Weave a character's fixed traits INLINE into the sentence (e.g. 'Henan, a thin 17-year-old boy with messy jet-black " +
   "hair, sits...'). NEVER write a separate character description block, character sheet, reference, lineup, or 'plus portrait of'.\n" +
@@ -290,22 +308,24 @@ const PROMPT_SYSTEM =
   "- NO TEXT: never describe text, letters, words, numbers, signs, signboards, posters, banners, newspapers, book pages, " +
   "screens with writing, labels or logos. If the script mentions something written, show the OBJECT and the character's " +
   "reaction instead, never the writing itself.\n" +
-  "- 55 to 85 words each. English only. No numbering inside the string.\n" +
+  "- 90 to 130 words each — dense with visual detail, no filler. English only. No numbering inside the string.\n" +
   "- Do not deliberate or explain. Output the JSON array immediately.\n" +
   'Return ONLY a JSON array of strings, one per numbered line, in order.';
 
 const CHUNK_SYSTEM =
-  "You are a manga art director. You are given a character bible, the story so far, and one CHUNK of consecutive " +
+  "You are a webtoon (manhwa) art director. You are given a character bible, the story so far, and one CHUNK of consecutive " +
   "script lines (Hindi/Hinglish) with timestamps. Analyse ONLY this chunk and return a compact English CHUNK BRIEF " +
   "that a storyboard artist will use to draw every line of this chunk.\n" +
   "Return plain text with exactly these labelled lines:\n" +
-  "SETTING: the place(s) this chunk happens in, with 3-5 concrete visual details (architecture, objects, weather, time of day).\n" +
+  "SETTING: the place(s) this chunk happens in, with 5-8 concrete visual details (architecture, materials, colours, " +
+  "furniture, objects, plants, weather, time of day). If the bible has a matching 'Place - ' line, reuse its details verbatim.\n" +
   "CAST: only the people who actually appear in this chunk, each with their fixed traits (from the bible if listed there, " +
   "otherwise invent a short fixed look: age, gender, hair, clothing colour). ALWAYS state each person's gender " +
   "explicitly as 'male' or 'female' with a matching noun, identical every time that person appears in the story. " +
   "Write 'none' if the chunk has no people.\n" +
   "OBJECTS: the specific things/phenomena the chunk mentions (gates, storm, letter, vehicle...) and how they look.\n" +
-  "MOOD: lighting and atmosphere for this chunk (one line).\n" +
+  "LIGHT: the natural lighting and colour of this chunk exactly as the script implies (time of day, light source, sky, " +
+  "dominant colours) — factual only, never add gloom, darkness or mystery the script does not state.\n" +
   "BEATS: one short line per numbered script line, in this exact format — 'n) LOCATION: <the place this shot happens " +
   "in, 3-6 words> | WHO: <exact character names visible in this shot, comma separated, or 'no people'> | <what visibly " +
   "happens>'.\n" +
@@ -391,7 +411,7 @@ export async function writePrompts(
             `CHARACTER BIBLE:\n${bible}\n\n` +
             (context ? `STORY SO FAR (context only — do NOT storyboard these):\n${context}\n\n` : "") +
             (brief
-              ? `CHUNK BRIEF (analysis of exactly these lines — obey its SETTING, CAST, OBJECTS, MOOD and per-line BEATS; ` +
+              ? `CHUNK BRIEF (analysis of exactly these lines — obey its SETTING, CAST, OBJECTS, LIGHT and per-line BEATS; ` +
                 `never add a person the BEATS call 'no people'):\n${brief}\n\n`
               : "") +
             `SCRIPT LINES:\n${lines}\n\nReturn a JSON array with exactly ${segs.length} prompt strings.`,
@@ -578,8 +598,8 @@ export function enforceLocation(prompt: string, location?: string): string {
 
 function fallbackPrompt(s: Segment, action?: string): string {
   return (
-    "A single cinematic manga scene, moody low-key lighting with the subject clearly lit, depicting this exact story " +
-    `moment: ${action ? action : s.text}`
+    "A single richly detailed full-colour webtoon scene in clear natural lighting, with a fully drawn background, " +
+    `depicting this exact story moment: ${action ? action : s.text}`
   );
 }
 
@@ -600,18 +620,21 @@ const TEXT_TRIGGERS: [RegExp, string][] = [
 ];
 
 /**
- * Only the extremes are softened now. The old rules rewrote ANY mention of
- * light into shadow, which stacked with the tone lock and the render grade and
- * made every panel far too dark.
+ * Dark-tone scrubber. The storyboard has no mood filter any more, so any
+ * leftover "dim / gloomy / mysterious" phrasing the text model still slips in
+ * is rewritten into neutral, well-lit wording. Genuine script facts (night,
+ * rain, a candle) are left alone — only the atmosphere adjectives go.
  */
-const BRIGHT_TRIGGERS: [RegExp, string][] = [
-  [/\b(blinding|dazzling)\s+(sunlight|sunshine|daylight|light|lighting|sun)\b/gi, "soft directional light"],
-  [/\b(sun-drenched|sun drenched)\b/gi, "overcast"],
-  [/\b(white|pastel|clean white)\s+background\b/gi, "muted grey background"],
-  [/\b(midday sun|noon sun|clear blue sky|bright blue sky)\b/gi, "overcast grey sky"],
+const DARK_TRIGGERS: [RegExp, string][] = [
+  [/\b(moody|gloomy|murky|ominous|foreboding|eerie|sinister|brooding|noir|mysterious|shadowy|dimly[- ]lit|dim|low[- ]key|chiaroscuro|oppressive|bleak|desaturated|muted)\s+(lighting|light|atmosphere|mood|tone|palette|colou?rs?|shadows?|room|scene|interior|street|corridor)\b/gi, "clear well-lit $2"],
+  [/\b(thick|deep|heavy|pitch|near|total|enveloping|swallowing)\s+(darkness|shadow|shadows|gloom|black)\b/gi, "soft natural light"],
+  [/\b(in|into|through|from|within|amid)\s+(the\s+)?(darkness|gloom|shadows|murk)\b/gi, "$1 the light"],
+  [/\b(hard|harsh|deep|long|heavy|dramatic)\s+shadows?\b/gi, "soft shadows"],
+  [/\b(moody|gloomy|murky|ominous|foreboding|eerie|sinister|brooding|noir|mysterious|shadowy|dimly[- ]lit|low[- ]key|oppressive|bleak)\b,?\s*/gi, ""],
+  [/\b(dark|dim)\s+(and|,)\s+(mysterious|moody|gloomy|eerie)\b/gi, "clearly lit"],
 ];
 
-/** Removes phrasing that makes the model draw a sheet/portrait, text, or blown-out light. */
+/** Removes phrasing that makes the model draw a sheet/portrait, text, or a dark mood grade. */
 export function sanitizePrompt(p: string): string {
   let out = p
     .replace(
@@ -623,7 +646,7 @@ export function sanitizePrompt(p: string): string {
       "full colour",
     );
   for (const [re, to] of TEXT_TRIGGERS) out = out.replace(re, to);
-  for (const [re, to] of BRIGHT_TRIGGERS) out = out.replace(re, to);
+  for (const [re, to] of DARK_TRIGGERS) out = out.replace(re, to);
 
   return out
     .replace(/\s{2,}/g, " ")
@@ -796,14 +819,15 @@ export function composeImagePrompt(prompt: string, bible?: string): string {
   const peopled = hasPeople(fixed, bible);
   // Character lock only matters when someone is actually in frame.
   const lock = peopled ? characterLock(fixed, bible) : "";
-  // The scene description leads: Flux weights the earliest tokens most, and it
-  // has no negative prompt, so guards are kept short and placed at the end.
+  // Flux weights the earliest tokens most: a short style lead comes first so
+  // the webtoon look can never be truncated away, then the detailed scene,
+  // then the identity lock, then the (short, positively phrased) guards.
   return (
-    `${fixed}. ${lock ? lock + " " : ""}${STYLE}, ${NO_TEXT_GUARD}. ` +
-    `${peopled ? CAST_GUARD : NO_PEOPLE_GUARD}. ${TONE_LOCK}. ${SINGLE_PANEL_GUARD}. ` +
+    `Full-colour webtoon manhwa page illustration, highly detailed: ${fixed}. ` +
+    `${lock ? lock + " " : ""}${TONE_LOCK}. ${STYLE}, ${NO_TEXT_GUARD}. ` +
+    `${peopled ? CAST_GUARD : NO_PEOPLE_GUARD}. ${SINGLE_PANEL_GUARD}. ` +
     `16:9 widescreen cinematic framing.`
   );
-
 }
 
 /**
@@ -856,7 +880,7 @@ async function isRealImage(url: string): Promise<boolean> {
 }
 
 
-/** Calls Flux.1 Schnell (free tier) with automatic retries. Always 16:9. */
+/** Calls Flux.1 Schnell (free tier) at max quality with automatic retries. Always 16:9. */
 export async function generateImage(
   prompt: string,
   seed: number,
@@ -864,7 +888,7 @@ export async function generateImage(
   bible?: string,
 ): Promise<string> {
   const keys = pixazoKeys();
-  const body = composeImagePrompt(prompt, bible).slice(0, 1900);
+  const body = composeImagePrompt(prompt, bible).slice(0, 2000);
 
   let lastErr = "";
   for (let attempt = 0; attempt < 6; attempt++) {
@@ -879,11 +903,14 @@ export async function generateImage(
         },
         body: JSON.stringify({
           prompt: body,
-          num_steps: 4,
+          // Quality over speed: the maximum step count Schnell accepts, at the
+          // largest 16:9 size the gateway honours (1280x720 is silently
+          // rejected; 1344x768 is rendered at that exact size).
+          num_steps: 8,
           // a fresh seed each attempt, so a blank frame is never re-rolled identically
           seed: seed + attempt * 977,
-          width: 1024,
-          height: 576,
+          width: 1344,
+          height: 768,
         }),
       });
       if (res.ok) {
