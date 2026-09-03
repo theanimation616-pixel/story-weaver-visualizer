@@ -166,12 +166,16 @@ export function parseJsonArray(raw: string): unknown[] {
  */
 export async function buildCharacterBible(script: string): Promise<string> {
   const system =
-    "You are a manga art director for a DARK, mysterious, noir-toned anime film. Read the script (it may be " +
+    "You are the art director of a full-colour webtoon (manhwa) adaptation. Read the script (it may be " +
     "Hinglish/Hindi) and list the recurring characters. For each, give ONE compact English line of FIXED, highly " +
     "specific visual traits usable verbatim inside an image prompt: age, gender, exact hair colour + length + style, " +
     "eye colour, skin tone, face shape, one distinguishing feature (scar, mole, glasses, bandage), build/height, and " +
     "signature clothing WITH exact colours. Be concrete — these traits must let an artist redraw the same person " +
-    "hundreds of times identically. 14-25 words per character. Max 6 characters. " +
+    "hundreds of times identically. 16-28 words per character. Max 6 characters. " +
+    "After the characters, add up to 4 recurring LOCATIONS the same way, one line each, prefixed 'Place - ', with " +
+    "fixed visual details (materials, colours, key furniture/landmarks, time of day if fixed) so the same place is " +
+    "drawn identically every time it appears, e.g. 'Place - Henan's home: small brick village house, blue wooden " +
+    "door, clay-tiled roof, neem tree in the yard, string cot outside'. " +
     "You are given only the OPENING of the script; that is enough — do not ask for more. " +
     "CRITICAL: determine each character's gender from the script (names, pronouns, relationships like brother/sister) " +
     "and make the gender the FIRST and most emphasized trait — write 'male' or 'female' explicitly plus a matching " +
