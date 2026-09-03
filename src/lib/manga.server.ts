@@ -618,18 +618,21 @@ const TEXT_TRIGGERS: [RegExp, string][] = [
 ];
 
 /**
- * Only the extremes are softened now. The old rules rewrote ANY mention of
- * light into shadow, which stacked with the tone lock and the render grade and
- * made every panel far too dark.
+ * Dark-tone scrubber. The storyboard has no mood filter any more, so any
+ * leftover "dim / gloomy / mysterious" phrasing the text model still slips in
+ * is rewritten into neutral, well-lit wording. Genuine script facts (night,
+ * rain, a candle) are left alone — only the atmosphere adjectives go.
  */
-const BRIGHT_TRIGGERS: [RegExp, string][] = [
-  [/\b(blinding|dazzling)\s+(sunlight|sunshine|daylight|light|lighting|sun)\b/gi, "soft directional light"],
-  [/\b(sun-drenched|sun drenched)\b/gi, "overcast"],
-  [/\b(white|pastel|clean white)\s+background\b/gi, "muted grey background"],
-  [/\b(midday sun|noon sun|clear blue sky|bright blue sky)\b/gi, "overcast grey sky"],
+const DARK_TRIGGERS: [RegExp, string][] = [
+  [/\b(moody|gloomy|murky|ominous|foreboding|eerie|sinister|brooding|noir|mysterious|shadowy|dimly[- ]lit|dim|low[- ]key|chiaroscuro|oppressive|bleak|desaturated|muted)\s+(lighting|light|atmosphere|mood|tone|palette|colou?rs?|shadows?|room|scene|interior|street|corridor)\b/gi, "clear well-lit $2"],
+  [/\b(thick|deep|heavy|pitch|near|total|enveloping|swallowing)\s+(darkness|shadow|shadows|gloom|black)\b/gi, "soft natural light"],
+  [/\b(in|into|through|from|within|amid)\s+(the\s+)?(darkness|gloom|shadows|murk)\b/gi, "$1 the light"],
+  [/\b(hard|harsh|deep|long|heavy|dramatic)\s+shadows?\b/gi, "soft shadows"],
+  [/\b(moody|gloomy|murky|ominous|foreboding|eerie|sinister|brooding|noir|mysterious|shadowy|dimly[- ]lit|low[- ]key|oppressive|bleak)\b,?\s*/gi, ""],
+  [/\b(dark|dim)\s+(and|,)\s+(mysterious|moody|gloomy|eerie)\b/gi, "clearly lit"],
 ];
 
-/** Removes phrasing that makes the model draw a sheet/portrait, text, or blown-out light. */
+/** Removes phrasing that makes the model draw a sheet/portrait, text, or a dark mood grade. */
 export function sanitizePrompt(p: string): string {
   let out = p
     .replace(
@@ -641,7 +644,7 @@ export function sanitizePrompt(p: string): string {
       "full colour",
     );
   for (const [re, to] of TEXT_TRIGGERS) out = out.replace(re, to);
-  for (const [re, to] of BRIGHT_TRIGGERS) out = out.replace(re, to);
+  for (const [re, to] of DARK_TRIGGERS) out = out.replace(re, to);
 
   return out
     .replace(/\s{2,}/g, " ")
