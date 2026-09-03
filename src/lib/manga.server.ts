@@ -252,9 +252,18 @@ const PROMPT_SYSTEM =
   "- FAITHFUL DETAIL (critical): the prompt must capture the specific things that line actually says — the object, the " +
   "place, the gesture, the emotion, the weather, the time of day. Never write a generic 'a boy stands thinking' prompt. " +
   "Do not skip story details; if the line has several details, include the most visual ones.\n" +
-  "- TONE: moody low-key and mysterious — night, dusk, storm, dim interiors, motivated single light sources — but the " +
-  "subject must be clearly lit and readable: name a key light that lands on the character's face. Avoid flat bright " +
-  "sunny daylight and white backgrounds; a daytime line can be overcast or softly lit rather than pitch dark.\n" +
+  "- LIGHTING & COLOUR: take the lighting ONLY from the script — daytime is bright natural daylight, an indoor scene " +
+  "is a well-lit room, a night scene is a clearly lit night with visible detail. Never add darkness, gloom, shadowy " +
+  "mystery, fog, noir or dim moody atmosphere that the line does not state. Name the light source and the dominant " +
+  "colours of the scene (e.g. 'warm afternoon sun through a window, cream walls, wooden floor').\n" +
+  "- RICH DETAIL (critical): every prompt must be dense with concrete visual detail — for the environment name at least " +
+  "4-6 specific drawable things (furniture, architecture, textures, props, plants, weather, ground surface) that fit the " +
+  "script's location; for each person describe posture, hand position, exact expression (eyes, eyebrows, mouth) and " +
+  "clothing state. Foreground, midground and background must each have something drawn in them. A reader must be able " +
+  "to tell exactly where the scene is and what is happening from the image alone.\n" +
+  "- CONTINUITY (critical): consecutive prompts are consecutive moments of ONE continuous story. Keep the same location " +
+  "details, the same time of day, the same weather, the same clothing and the same props from the previous line unless " +
+  "the script changes them. Reuse the exact wording of the bible's 'Place - ' lines whenever the scene is in that place.\n" +
 
   "- Weave a character's fixed traits INLINE into the sentence (e.g. 'Henan, a thin 17-year-old boy with messy jet-black " +
   "hair, sits...'). NEVER write a separate character description block, character sheet, reference, lineup, or 'plus portrait of'.\n" +
