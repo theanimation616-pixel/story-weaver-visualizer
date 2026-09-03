@@ -596,8 +596,8 @@ export function enforceLocation(prompt: string, location?: string): string {
 
 function fallbackPrompt(s: Segment, action?: string): string {
   return (
-    "A single cinematic manga scene, moody low-key lighting with the subject clearly lit, depicting this exact story " +
-    `moment: ${action ? action : s.text}`
+    "A single richly detailed full-colour webtoon scene in clear natural lighting, with a fully drawn background, " +
+    `depicting this exact story moment: ${action ? action : s.text}`
   );
 }
 
